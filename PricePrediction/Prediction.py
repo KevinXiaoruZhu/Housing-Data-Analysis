@@ -3,7 +3,7 @@ import csv
 import numpy as np
 from pyspark.mllib.regression import LabeledPoint
 from pyspark.mllib.regression import LinearRegressionWithSGD
-# from pyspark.mllib.regression import LinearRegressionModel
+from pyspark.mllib.regression import LinearRegressionModel
 # from pyspark.ml.regression import LinearRegression
 import matplotlib
 import matplotlib.pyplot as plt
@@ -120,15 +120,22 @@ def evaluate(train_set, iterations, step, reg_param, reg_type, intercept):
 if __name__ == '__main__':
     # create linear model and test
     linear_model = LinearRegressionWithSGD.train(data, iterations=200, step=0.05, intercept=False)
+    linear_model.save(sc, 'PricePrediction/model/LR.model') # save the trained model to local
     true_vs_predicted = data.map(lambda point: (point.label, linear_model.predict(point.features)))
     print('线性回归模型对前5个样本的预测值: ' + str(true_vs_predicted.take(5)))  # test
 
+    '''
+    same_md = LinearRegressionModel.load(sc, 'PricePrediction/model/LR.model')
+    true_vs_predicted = data.map(lambda point: (point.label, same_md.predict(point.features)))
+    print(str(true_vs_predicted.take(2)))
+    '''
+   
     # error analysis
     m_s_e = true_vs_predicted.map(lambda tp: squared_error(tp[0], tp[1])).mean()
     m_a_e = true_vs_predicted.map(lambda tp: abs_error(tp[0], tp[1])).mean()
     r_m_s_l_e = np.sqrt(true_vs_predicted.map(lambda tp: squared_log_error(tp[0], tp[1])).mean())
     # print('Linear Model - Mean Squared Error: %2.4f' % m_s_e)
-    # print('Linear Model - Mean Absolute Error: %2.4f' % m_a_e)
+    print('Linear Model - Mean Absolute Error: %2.4f' % m_a_e)
     print('Linear Model - Root Mean Squared Log Error: %2.4f' % r_m_s_l_e)
 
     # adjust 'iterations' argument

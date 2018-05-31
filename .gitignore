@@ -14,3 +14,6 @@ Dataset/
 
 /.idea/
 .idea/vcs.xml
+
+/PricePrediction/model/
+/spark-warehouse/
