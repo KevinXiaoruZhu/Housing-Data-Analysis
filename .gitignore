@@ -13,3 +13,4 @@ Dataset/
 *.py[cod]
 
 /.idea/
+.idea/vcs.xml
