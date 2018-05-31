@@ -1,0 +1,15 @@
+## ignore these files ##
+
+
+# OS generated files #
+.DS_Store
+.DS_Store?
+._*
+
+# ignore the whole dir #
+Dataset/
+
+# ignore python compiled file#
+*.py[cod]
+
+/.idea/
